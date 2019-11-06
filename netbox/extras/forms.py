@@ -4,6 +4,9 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
+from django_filters.fields import DateRangeField
+from django_filters.widgets import DateRangeWidget
+from django_filters.widgets import SuffixedMultiWidget
 from taggit.forms import TagField
 
 from dcim.models import DeviceRole, Platform, Region, Site
@@ -20,6 +23,15 @@ from .models import ConfigContext, CustomField, CustomFieldValue, ImageAttachmen
 #
 # Custom fields
 #
+class FixedDateRangeWidget(DateRangeWidget):
+    def __init__(self, attrs=None):
+        widgets = (DatePicker(), DatePicker())
+        super(SuffixedMultiWidget, self).__init__(widgets, attrs)
+
+
+class FixedDateRangeField(DateRangeField):
+    widget = FixedDateRangeWidget
+
 
 def get_custom_fields_for_model(content_type, filterable_only=False, bulk_edit=False):
     """
@@ -56,8 +68,10 @@ def get_custom_fields_for_model(content_type, filterable_only=False, bulk_edit=F
             )
 
         # Date
-        elif cf.type == CustomFieldTypeChoices.TYPE_DATE:
+        elif cf.type == CustomFieldTypeChoices.TYPE_DATE and filterable_only is False:
             field = forms.DateField(required=cf.required, initial=initial, widget=DatePicker())
+        elif cf.type == CustomFieldTypeChoices.TYPE_DATE and filterable_only is True:
+            field = FixedDateRangeField(required=cf.required, initial=initial)
 
         # Select
         elif cf.type == CustomFieldTypeChoices.TYPE_SELECT:

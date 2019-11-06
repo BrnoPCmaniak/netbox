@@ -1,6 +1,7 @@
 import django_filters
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
+from django_filters.fields import DateRangeField
 
 from dcim.models import DeviceRole, Platform, Region, Site
 from tenancy.models import Tenant, TenantGroup
@@ -29,12 +30,16 @@ class CustomFieldFilter(django_filters.Filter):
     def __init__(self, custom_field, *args, **kwargs):
         self.cf_type = custom_field.type
         self.filter_logic = custom_field.filter_logic
+        if self.cf_type == CustomFieldTypeChoices.TYPE_DATE:
+            self.field_class = DateRangeField
         super().__init__(*args, **kwargs)
 
     def filter(self, queryset, value):
-
         # Skip filter on empty value
-        if value is None or not value.strip():
+        if value is None:
+            return queryset
+
+        if self.cf_type != CustomFieldTypeChoices.TYPE_DATE and not value.strip():
             return queryset
 
         # Selection fields get special treatment (values must be integers)
@@ -53,6 +58,23 @@ class CustomFieldFilter(django_filters.Filter):
                     )
             except ValueError:
                 return queryset.none()
+
+        if self.cf_type == CustomFieldTypeChoices.TYPE_DATE:
+            if value.start is not None and value.stop is not None:
+                return queryset.filter(
+                    custom_field_values__field__name=self.field_name,
+                    custom_field_values__serialized_value__range=(value.start, value.stop),
+                )
+            elif value.start is not None:
+                return queryset.filter(
+                    custom_field_values__field__name=self.field_name,
+                    custom_field_values__serialized_value__gte=value.start,
+                )
+            elif value.stop is not None:
+                return queryset.filter(
+                    custom_field_values__field__name=self.field_name,
+                    custom_field_values__serialized_value__lte=value.stop,
+                )
 
         # Apply the assigned filter logic (exact or loose)
         if (self.cf_type == CustomFieldTypeChoices.TYPE_BOOLEAN or
