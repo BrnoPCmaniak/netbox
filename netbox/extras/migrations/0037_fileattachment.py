@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('contenttypes', '0002_remove_content_type_name'),
-        ('extras', '0027_webhook_additional_headers'),
+        ('extras', '0036_contenttype_filters_to_q_objects'),
     ]
 
     operations = [
