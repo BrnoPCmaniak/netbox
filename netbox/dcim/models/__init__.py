@@ -215,6 +215,9 @@ class Site(ChangeLoggedModel, CustomFieldModel):
     images = GenericRelation(
         to='extras.ImageAttachment'
     )
+    files = GenericRelation(
+        to='extras.FileAttachment'
+    )
 
     objects = NaturalOrderingManager()
     tags = TaggableManager(through=TaggedItem)
@@ -601,6 +604,9 @@ class Rack(ChangeLoggedModel, CustomFieldModel, RackElevationHelperMixin):
     )
     images = GenericRelation(
         to='extras.ImageAttachment'
+    )
+    files = GenericRelation(
+        to='extras.FileAttachment'
     )
 
     objects = NaturalOrderingManager()
@@ -1399,6 +1405,9 @@ class Device(ChangeLoggedModel, ConfigContextModel, CustomFieldModel):
     )
     images = GenericRelation(
         to='extras.ImageAttachment'
+    )
+    files = GenericRelation(
+        to='extras.FileAttachment'
     )
 
     objects = NaturalOrderingManager()

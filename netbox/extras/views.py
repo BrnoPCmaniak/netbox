@@ -14,7 +14,7 @@ from utilities.forms import ConfirmationForm
 from utilities.paginator import EnhancedPaginator
 from utilities.views import BulkDeleteView, BulkEditView, ObjectDeleteView, ObjectEditView, ObjectListView
 from . import filters, forms
-from .models import ConfigContext, ImageAttachment, ObjectChange, ReportResult, Tag, TaggedItem
+from .models import ConfigContext, ImageAttachment, ObjectChange, ReportResult, Tag, TaggedItem, FileAttachment
 from .reports import get_report, get_reports
 from .scripts import get_scripts, run_script
 from .tables import ConfigContextTable, ObjectChangeTable, TagTable, TaggedItemTable
@@ -286,6 +286,34 @@ class ImageAttachmentDeleteView(PermissionRequiredMixin, ObjectDeleteView):
 
     def get_return_url(self, request, imageattachment):
         return imageattachment.parent.get_absolute_url()
+
+#
+# File attachments
+#
+
+
+class FileAttachmentEditView(PermissionRequiredMixin, ObjectEditView):
+    permission_required = 'extras.change_fileattachment'
+    model = FileAttachment
+    model_form = forms.FileAttachmentForm
+
+    def alter_obj(self, fileattachment, request, args, kwargs):
+        if not fileattachment.pk:
+            # Assign the parent object based on URL kwargs
+            model = kwargs.get('model')
+            fileattachment.parent = get_object_or_404(model, pk=kwargs['object_id'])
+        return fileattachment
+
+    def get_return_url(self, request, fileattachment):
+        return fileattachment.parent.get_absolute_url()
+
+
+class FileAttachmentDeleteView(PermissionRequiredMixin, ObjectDeleteView):
+    permission_required = 'extras.delete_fileattachment'
+    model = FileAttachment
+
+    def get_return_url(self, request, fileattachment):
+        return fileattachment.parent.get_absolute_url()
 
 
 #

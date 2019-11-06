@@ -31,6 +31,7 @@ __all__ = (
     'ExportTemplate',
     'Graph',
     'ImageAttachment',
+    'FileAttachment',
     'ObjectChange',
     'ReportResult',
     'Script',
@@ -649,6 +650,74 @@ class ImageAttachment(models.Model):
         except tuple(expected_exceptions):
             return None
 
+
+#
+# File attachments
+#
+
+def file_upload(instance, filename):
+
+    path = 'file-attachments/'
+
+    return '{}{}_{}_{}_{}'.format(path, instance.content_type.name, instance.object_id, instance.name, filename)
+
+
+class FileAttachment(models.Model):
+    """
+    An uploaded image which is associated with an object.
+    """
+    content_type = models.ForeignKey(
+        to=ContentType,
+        on_delete=models.CASCADE
+    )
+    object_id = models.PositiveIntegerField()
+    parent = GenericForeignKey(
+        ct_field='content_type',
+        fk_field='object_id'
+    )
+    file = models.FileField(
+        upload_to=file_upload,
+    )
+
+    name = models.CharField(
+        max_length=50,
+        blank=True
+    )
+    created = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        if self.name:
+            return self.name
+        filename = self.file.name.rsplit('/', 1)[-1]
+        return filename.split('_', 2)[2]
+
+    def delete(self, *args, **kwargs):
+
+        _name = self.file.name
+
+        super().delete(*args, **kwargs)
+
+        # Delete file from disk
+        self.file.delete(save=False)
+
+        # Deleting the file erases its name. We restore the image's filename here in case we still need to reference it
+        # before the request finishes. (For example, to display a message indicating the ImageAttachment was deleted.)
+        self.file.name = _name
+
+    @property
+    def size(self):
+        """
+        Wrapper around `file.size` to suppress an OSError in case the file is inaccessible.
+        """
+        try:
+            return self.file.size
+        except OSError:
+            return None
 
 #
 # Config contexts

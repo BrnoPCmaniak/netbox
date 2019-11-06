@@ -12,6 +12,7 @@ from rest_framework.viewsets import ReadOnlyModelViewSet, ViewSet
 from extras import filters
 from extras.models import (
     ConfigContext, CustomFieldChoice, ExportTemplate, Graph, ImageAttachment, ObjectChange, ReportResult, Tag,
+    FileAttachment
 )
 from extras.reports import get_report, get_reports
 from extras.scripts import get_script, get_scripts
@@ -137,6 +138,15 @@ class ImageAttachmentViewSet(ModelViewSet):
 
 
 #
+# File attachments
+#
+
+class FileAttachmentViewSet(ModelViewSet):
+    queryset = FileAttachment.objects.all()
+    serializer_class = serializers.FileAttachmentSerializer
+
+
+#
 # Config contexts
 #
 
@@ -181,7 +191,6 @@ class ReportViewSet(ViewSet):
         # Iterate through all available Reports.
         for module_name, reports in get_reports():
             for report in reports:
-
                 # Attach the relevant ReportResult (if any) to each Report.
                 report.result = ReportResult.objects.filter(report=report.full_name).defer('data').first()
                 report_list.append(report)

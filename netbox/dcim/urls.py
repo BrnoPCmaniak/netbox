@@ -1,6 +1,6 @@
 from django.urls import path
 
-from extras.views import ObjectChangeLogView, ImageAttachmentEditView
+from extras.views import ObjectChangeLogView, ImageAttachmentEditView, FileAttachmentEditView
 from ipam.views import ServiceCreateView
 from secrets.views import secret_add
 from . import views
@@ -32,6 +32,7 @@ urlpatterns = [
     path(r'sites/<slug:slug>/delete/', views.SiteDeleteView.as_view(), name='site_delete'),
     path(r'sites/<slug:slug>/changelog/', ObjectChangeLogView.as_view(), name='site_changelog', kwargs={'model': Site}),
     path(r'sites/<int:object_id>/images/add/', ImageAttachmentEditView.as_view(), name='site_add_image', kwargs={'model': Site}),
+    path(r'sites/<int:object_id>/files/add/', FileAttachmentEditView.as_view(), name='site_add_file', kwargs={'model': Site}),
 
     # Rack groups
     path(r'rack-groups/', views.RackGroupListView.as_view(), name='rackgroup_list'),
@@ -70,6 +71,7 @@ urlpatterns = [
     path(r'racks/<int:pk>/changelog/', ObjectChangeLogView.as_view(), name='rack_changelog', kwargs={'model': Rack}),
     path(r'racks/<int:rack>/reservations/add/', views.RackReservationCreateView.as_view(), name='rack_add_reservation'),
     path(r'racks/<int:object_id>/images/add/', ImageAttachmentEditView.as_view(), name='rack_add_image', kwargs={'model': Rack}),
+    path(r'racks/<int:object_id>/files/add/', FileAttachmentEditView.as_view(), name='rack_add_file', kwargs={'model': Rack}),
 
     # Manufacturers
     path(r'manufacturers/', views.ManufacturerListView.as_view(), name='manufacturer_list'),
@@ -166,6 +168,7 @@ urlpatterns = [
     path(r'devices/<int:pk>/add-secret/', secret_add, name='device_addsecret'),
     path(r'devices/<int:device>/services/assign/', ServiceCreateView.as_view(), name='device_service_assign'),
     path(r'devices/<int:object_id>/images/add/', ImageAttachmentEditView.as_view(), name='device_add_image', kwargs={'model': Device}),
+    path(r'devices/<int:object_id>/files/add/', FileAttachmentEditView.as_view(), name='device_add_file', kwargs={'model': Device}),
 
     # Console ports
     path(r'devices/console-ports/add/', views.DeviceBulkAddConsolePortView.as_view(), name='device_bulk_add_consoleport'),

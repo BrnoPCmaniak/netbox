@@ -11,7 +11,7 @@ from dcim.models import Device, DeviceRole, Platform, Rack, Region, Site
 from extras.choices import *
 from extras.constants import *
 from extras.models import (
-    ConfigContext, ExportTemplate, Graph, ImageAttachment, ObjectChange, ReportResult, Tag,
+    ConfigContext, ExportTemplate, Graph, ImageAttachment, ObjectChange, ReportResult, Tag, FileAttachment
 )
 from tenancy.api.nested_serializers import NestedTenantSerializer, NestedTenantGroupSerializer
 from tenancy.models import Tenant, TenantGroup
@@ -131,7 +131,51 @@ class ImageAttachmentSerializer(ValidatedModelSerializer):
 
         return serializer(obj.parent, context={'request': self.context['request']}).data
 
+#
+# File attachments
+#
 
+class FileAttachmentSerializer(ValidatedModelSerializer):
+    content_type = ContentTypeField(
+        queryset=ContentType.objects.all()
+    )
+    parent = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = FileAttachment
+        fields = [
+            'id', 'content_type', 'object_id', 'parent', 'name', 'file', 'created',
+        ]
+
+    def validate(self, data):
+
+        # Validate that the parent object exists
+        try:
+            data['content_type'].get_object_for_this_type(id=data['object_id'])
+        except ObjectDoesNotExist:
+            raise serializers.ValidationError(
+                "Invalid parent object: {} ID {}".format(data['content_type'], data['object_id'])
+            )
+
+        # Enforce model validation
+        super().validate(data)
+
+        return data
+
+    @swagger_serializer_method(serializer_or_field=serializers.DictField)
+    def get_parent(self, obj):
+
+        # Static mapping of models to their nested serializers
+        if isinstance(obj.parent, Device):
+            serializer = NestedDeviceSerializer
+        elif isinstance(obj.parent, Rack):
+            serializer = NestedRackSerializer
+        elif isinstance(obj.parent, Site):
+            serializer = NestedSiteSerializer
+        else:
+            raise Exception("Unexpected type of parent object for FileAttachment")
+
+        return serializer(obj.parent, context={'request': self.context['request']}).data
 #
 # Config contexts
 #

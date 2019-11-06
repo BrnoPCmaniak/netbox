@@ -255,6 +255,20 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
+                <strong>Files</strong>
+            </div>
+            {% include 'inc/file_attachments.html' with files=rack.files.all %}
+            {% if perms.extras.add_fileattachment %}
+                <div class="panel-footer text-right noprint">
+                    <a href="{% url 'dcim:rack_add_file' object_id=rack.pk %}" class="btn btn-primary btn-xs">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        Attach a file
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
                 <strong>Reservations</strong>
             </div>
             {% if reservations %}

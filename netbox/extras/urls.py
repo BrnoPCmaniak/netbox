@@ -29,6 +29,10 @@ urlpatterns = [
     path(r'image-attachments/<int:pk>/edit/', views.ImageAttachmentEditView.as_view(), name='imageattachment_edit'),
     path(r'image-attachments/<int:pk>/delete/', views.ImageAttachmentDeleteView.as_view(), name='imageattachment_delete'),
 
+    # File attachments
+    path(r'file-attachments/<int:pk>/edit/', views.FileAttachmentEditView.as_view(), name='fileattachment_edit'),
+    path(r'file-attachments/<int:pk>/delete/', views.FileAttachmentDeleteView.as_view(), name='fileattachment_delete'),
+
     # Change logging
     path(r'changelog/', views.ObjectChangeListView.as_view(), name='objectchange_list'),
     path(r'changelog/<int:pk>/', views.ObjectChangeView.as_view(), name='objectchange'),

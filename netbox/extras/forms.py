@@ -14,7 +14,7 @@ from utilities.forms import (
     SlugField, StaticSelect2, BOOLEAN_WITH_BLANK_CHOICES,
 )
 from .choices import *
-from .models import ConfigContext, CustomField, CustomFieldValue, ImageAttachment, ObjectChange, Tag
+from .models import ConfigContext, CustomField, CustomFieldValue, ImageAttachment, ObjectChange, Tag, FileAttachment
 
 
 #
@@ -174,7 +174,6 @@ class CustomFieldBulkEditForm(BulkEditForm):
 class CustomFieldFilterForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
-
         self.obj_type = ContentType.objects.get_for_model(self.model)
 
         super().__init__(*args, **kwargs)
@@ -385,11 +384,22 @@ class LocalConfigContextFilterForm(forms.Form):
 #
 
 class ImageAttachmentForm(BootstrapMixin, forms.ModelForm):
-
     class Meta:
         model = ImageAttachment
         fields = [
             'name', 'image',
+        ]
+
+
+#
+# File attachments
+#
+
+class FileAttachmentForm(BootstrapMixin, forms.ModelForm):
+    class Meta:
+        model = FileAttachment
+        fields = [
+            'name', 'file',
         ]
 
 

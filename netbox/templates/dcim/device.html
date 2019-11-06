@@ -455,6 +455,20 @@
                     </div>
                 {% endif %}
             </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong>Files</strong>
+                </div>
+                {% include 'inc/file_attachments.html' with files=device.files.all %}
+                {% if perms.extras.add_fileattachment %}
+                    <div class="panel-footer text-right noprint">
+                        <a href="{% url 'dcim:device_add_file' object_id=device.pk %}" class="btn btn-primary btn-xs">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                            Attach a file
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
             <div class="panel panel-default noprint">
                 <div class="panel-heading">
                     <strong>Related Devices</strong>
