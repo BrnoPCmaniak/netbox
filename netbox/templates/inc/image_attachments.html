@@ -9,8 +9,7 @@
         {% for attachment in images %}
             <tr{% if not attachment.size %} class="danger"{% endif %}>
                 <td>
-                    <i class="fa fa-image"></i>
-                    <a class="image-preview" href="{{ attachment.image.url }}" target="_blank">{{ attachment }}</a>
+                    <a class="popover_images" data-toggle="popover" data-trigger="hover" data-placement="top" data-html="true" href="{{ attachment.image.url }}" data-original-title="{{ attachment }}" data-content="<img src='{{ attachment.image.url }}' width='100%' height='100%'>" target="_blank"><i class="fa fa-image"></i> {{ attachment }}</a>
                 </td>
                 <td>{{ attachment.size|filesizeformat }}</td>
                 <td>{{ attachment.created }}</td>
