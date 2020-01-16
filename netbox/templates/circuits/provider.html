@@ -116,6 +116,20 @@
                 {% endif %}
             </div>
         </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Files</strong>
+            </div>
+            {% include 'inc/file_attachments.html' with files=provider.files.all %}
+            {% if perms.extras.add_fileattachment %}
+                <div class="panel-footer text-right noprint">
+                    <a href="{% url 'circuits:provider_add_file' object_id=provider.pk %}" class="btn btn-primary btn-xs">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        Attach a file
+                    </a>
+                </div>
+            {% endif %}
+        </div>
 	</div>
 	<div class="col-md-8">
         <div class="panel panel-default">

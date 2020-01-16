@@ -1,7 +1,7 @@
 from django.urls import path
 
 from dcim.views import CableCreateView, CableTraceView
-from extras.views import ObjectChangeLogView
+from extras.views import FileAttachmentEditView, ImageAttachmentEditView, ObjectChangeLogView
 from . import views
 from .models import Circuit, CircuitTermination, CircuitType, Provider
 
@@ -18,6 +18,7 @@ urlpatterns = [
     path(r'providers/<slug:slug>/edit/', views.ProviderEditView.as_view(), name='provider_edit'),
     path(r'providers/<slug:slug>/delete/', views.ProviderDeleteView.as_view(), name='provider_delete'),
     path(r'providers/<slug:slug>/changelog/', ObjectChangeLogView.as_view(), name='provider_changelog', kwargs={'model': Provider}),
+    path(r'providers/<int:object_id>/files/add/', FileAttachmentEditView.as_view(), name='provider_add_file', kwargs={'model': Provider}),
 
     # Circuit types
     path(r'circuit-types/', views.CircuitTypeListView.as_view(), name='circuittype_list'),
@@ -38,6 +39,8 @@ urlpatterns = [
     path(r'circuits/<int:pk>/delete/', views.CircuitDeleteView.as_view(), name='circuit_delete'),
     path(r'circuits/<int:pk>/changelog/', ObjectChangeLogView.as_view(), name='circuit_changelog', kwargs={'model': Circuit}),
     path(r'circuits/<int:pk>/terminations/swap/', views.circuit_terminations_swap, name='circuit_terminations_swap'),
+    path(r'circuits/<int:object_id>/images/add/', ImageAttachmentEditView.as_view(), name='circuit_add_image', kwargs={'model': Circuit}),
+    path(r'circuits/<int:object_id>/files/add/', FileAttachmentEditView.as_view(), name='circuit_add_file', kwargs={'model': Circuit}),
 
     # Circuit terminations
 

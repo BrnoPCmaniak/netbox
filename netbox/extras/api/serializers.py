@@ -3,6 +3,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 
+from circuits.api.nested_serializers import NestedCircuitSerializer
+from circuits.api.nested_serializers import NestedProviderSerializer
+from circuits.models import Circuit
+from circuits.models import Provider
 from dcim.api.nested_serializers import (
     NestedDeviceSerializer, NestedDeviceRoleSerializer, NestedPlatformSerializer, NestedRackSerializer,
     NestedRegionSerializer, NestedSiteSerializer,
@@ -126,6 +130,8 @@ class ImageAttachmentSerializer(ValidatedModelSerializer):
             serializer = NestedRackSerializer
         elif isinstance(obj.parent, Site):
             serializer = NestedSiteSerializer
+        elif isinstance(obj.parent, Circuit):
+            serializer = NestedCircuitSerializer
         else:
             raise Exception("Unexpected type of parent object for ImageAttachment")
 
@@ -172,6 +178,10 @@ class FileAttachmentSerializer(ValidatedModelSerializer):
             serializer = NestedRackSerializer
         elif isinstance(obj.parent, Site):
             serializer = NestedSiteSerializer
+        elif isinstance(obj.parent, Circuit):
+            serializer = NestedCircuitSerializer
+        elif isinstance(obj.parent, Provider):
+            serializer = NestedProviderSerializer
         else:
             raise Exception("Unexpected type of parent object for FileAttachment")
 

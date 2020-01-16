@@ -62,6 +62,9 @@ class Provider(ChangeLoggedModel, CustomFieldModel):
         content_type_field='obj_type',
         object_id_field='obj_id'
     )
+    files = GenericRelation(
+        to='extras.FileAttachment'
+    )
 
     tags = TaggableManager(through=TaggedItem)
 
@@ -182,6 +185,12 @@ class Circuit(ChangeLoggedModel, CustomFieldModel):
         to='extras.CustomFieldValue',
         content_type_field='obj_type',
         object_id_field='obj_id'
+    )
+    images = GenericRelation(
+        to='extras.ImageAttachment'
+    )
+    files = GenericRelation(
+        to='extras.FileAttachment'
     )
 
     tags = TaggableManager(through=TaggedItem)

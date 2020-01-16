@@ -125,6 +125,34 @@
                 {% endif %}
             </div>
         </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Images</strong>
+            </div>
+            {% include 'inc/image_attachments.html' with images=circuit.images.all %}
+            {% if perms.extras.add_imageattachment %}
+                <div class="panel-footer text-right noprint">
+                    <a href="{% url 'circuits:circuit_add_image' object_id=circuit.pk %}" class="btn btn-primary btn-xs">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        Attach an image
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Files</strong>
+            </div>
+            {% include 'inc/file_attachments.html' with files=circuit.files.all %}
+            {% if perms.extras.add_fileattachment %}
+                <div class="panel-footer text-right noprint">
+                    <a href="{% url 'circuits:circuit_add_file' object_id=circuit.pk %}" class="btn btn-primary btn-xs">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        Attach a file
+                    </a>
+                </div>
+            {% endif %}
+        </div>
 	</div>
 	<div class="col-md-6">
         {% include 'circuits/inc/circuit_termination.html' with termination=termination_a side='A' %}
